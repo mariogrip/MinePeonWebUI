@@ -1,9 +1,10 @@
 <?php
+//This is not finished!
+//I will do a lot more work here
 
 require('../../api.php');
 
 
-//This API will force the system to make an updatded graph
 if (isset($_GET["type"])){
 if (isset($_GET["API_KEY"])){
 
