@@ -1,0 +1,163 @@
+<h3>User</h3>
+<form name="formUser" class="form-horizontal">
+  <fieldset>
+    <div class="form-group">
+      <label for="helpEnable" class="control-label col-lg-2">Help text</label>
+      <div class="col-lg-10">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="helpEnable" ng-model="settings.helpEnable"> Show info about settings and how the interface works
+          </label>
+        </div>
+        <p class="help-block" ng-show="settings.helpEnable">Don't forget to check out the information on other pages.</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="userTimezone" class="control-label col-lg-2">Timezone</label>
+      <div class="col-lg-10">
+        <input type="text" id="userTimezone" ng-model="settings.userTimezone" class="form-control" required>
+        <p class="help-block">MinePeon thinks it is now {{1000*settings.time|date:'yyyy-MM-dd HH:mm:ss'}} <a href="" ng-click="sync('timezone',1,1)">Update system timezone</a></p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="userPassword" class="control-label col-lg-2">New Password</label>
+      <div class="col-lg-5">
+        <input type="password" placeholder="New password" id="userPassword" name="userPassword" ng-model="userPassword" class="form-control">
+      </div>
+      <div class="col-lg-5">
+        <input type="password" placeholder="Repeat new password" id="userPassword2" name="userPassword2" ng-model="userPassword2" class="form-control" ng->
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-lg-10 col-offset-2">
+        <p class="help-block" ng-show="settings.helpEnable">You need this password to access this webinterface. Changing it will log you out.</p>
+        <p class="help-block" ng-show="settings.helpEnable">An empty password will not be saved.</p>
+        <button type="button" class="btn btn-success" ng-click="sync('pass',userPassword)" ng-show="formUser.userPassword.$dirty"
+        ng-disabled="userPassword!=userPassword2">Save password</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
+<h3>Mining</h3>
+<form name="formMining" class="form-horizontal">
+  <fieldset>
+    <div class="form-group">
+      <label for="miningRecover" class="control-label col-lg-2">Monitor process</label>
+      <div class="col-lg-10">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="miningRecover" ng-model="settings.miningRecover"> Automatically attempt recovery
+          </label>
+        </div>
+        <p class="help-block" ng-show="settings.helpEnable">
+          Every 5 minutes, a monitoring process evaluates the following: amount of devices running, device hashrate and pool stats.
+        </p>
+        <p class="help-block" ng-show="settings.helpEnable">
+          When MinePeon detects something wrong with any of the above it will send you an email telling you about the problem. If you enable this option the following actions will be taken:<br />
+          Within 5 minutes: Send the miner API a restart to try and fix it.<br />
+          Within 10 minutes: Failing a miner restart MinePeon will "kill -9" the miner and reload it.<br />
+          Within 15 minutes: Failing that MinePeon will reboot itself to attempt a fix.
+        </p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="miningExpDev" class="control-label col-lg-2">Expected Devices</label>
+      <div class="col-lg-10">
+        <input type="number" id="miningExpDev" ng-model="settings.miningExpDev" class="form-control" required>
+        <p class="help-block" ng-show="settings.helpEnable">
+          If the count of active devices falls below this value, an alert will be sent.
+        </p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="miningExpHash" class="control-label col-lg-2">Expected Hashrate</label>
+      <div class="col-lg-10">
+        <div class="input-group">
+          <input type="number" id="miningExpHash" ng-model="settings.miningExpHash" class="form-control" required>
+          <span class="input-group-addon">MH/s</span>
+        </div>
+        <p class="help-block" ng-show="settings.helpEnable">
+          If the hashrate falls below half this value for more than a minute, an alert will be sent.<br/>
+          After 3 minutes cgminer will be restarted.
+        </p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="donateAmount" class="control-label col-lg-2">Donation</label>
+      <div class="col-lg-4">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="donateEnable" ng-model="settings.donateEnable"> Enable donation
+          </label>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div ng-show="settings.donateEnable">
+          <div class="input-group">
+            <input type="number" placeholder="Donation minutes" id="donateAmount" ng-model="settings.donateAmount" ng-required="settings.donateEnable" class="form-control">
+            <span class="input-group-addon">minutes per day</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-10 col-offset-2" ng-hide="settings.donateEnable">
+        <p>
+          You might not like idea that your mining hardware is being used by somebody else.<br />
+          We understand.<br />
+          Now look what your support could bring you:
+          <ul class="list-unstyled">
+            <li>Live Update <span class="label label-success">Almost finished</span></li>
+            <li>SMS/Email Alerts <span class="label label-success">Almost finished</span></li>
+            <li>Backup/Restore <span class="label label-warning">Work in progress</span></li>
+            <li>TFT Display</li>
+            <li>LCD Display</li>
+            <li>Android app</li> 
+            <li>iOS app</li>
+            <li>Cloud Control</li>
+            <li>VPN Tunneling (DDOS Protection & Anonymity)</li>
+          </ul>
+        </p>
+      </div>
+      <div class="col-lg-10 col-offset-2" ng-show="settings.helpEnable">
+        <p>
+          Daily, at midnight, MinePeon will replace your miner configuration with donation configuration and then restart the miner.<br />
+          When disabled, configuration and the miner will not be touched. Last donation moment: <span class="text-muted">(to come)</span>
+        </p>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
+<h3>Alerts</h3>
+<form name="formAlert" class="form-horizontal">
+  <fieldset>
+    <div class="form-group">
+      <div class="col-lg-10 col-offset-2">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="alertEnable" ng-model="settings.alertEnable"> Enable e-mail alerts
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" ng-show="settings.alertEnable">
+      <label for="alertDevice" class="control-label col-lg-2">Device Name</label>
+      <div class="col-lg-10">
+        <input type="text" id="alertDevice" ng-model="settings.alertDevice" ng-required="settings.alertEnable" class="form-control">
+      </div>
+    </div>
+    <div class="form-group" ng-show="settings.alertEnable">
+      <label for="alertEmail" class="control-label col-lg-2">E-mail</label>
+      <div class="col-lg-10">
+        <input type="email" id="alertEmail" ng-model="settings.alertEmail" ng-required="settings.alertEnable" class="form-control">
+      </div>
+    </div>
+    <div class="form-group" ng-show="settings.alertEnable">
+      <label for="alertSmtp" class="control-label col-lg-2">SMTP Server</label>
+      <div class="col-lg-10">
+        <input type="text" id="alertSmtp" ng-model="settings.alertSmtp" ng-required="settings.alertEnable" class="form-control">
+        <p class="help-block" ng-show="settings.helpEnable">Please choose your own SMTP server.</p>
+      </div>
+    </div>
+  </fieldset>
+</form>

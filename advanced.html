@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="Peon">
+<head>
+	<meta charset="utf-8">
+	<title>Advanced - MinePeon</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-minepeon.css" rel="stylesheet">
+</head>
+<body ng-controller="CtrlMain">
+	<div class="peon-trigger">
+		<div class="navbar navbar-static-top">
+			<div class="container">
+				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="./" class="navbar-brand">MinePeon</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li menu-active><a ng-href="#/status">Status</a></li>
+						<li menu-active><a ng-href="#/miner">Miner</a></li>
+						<li menu-active><a ng-href="#/settings">Settings</a></li>
+						<li menu-active><a ng-href="#/backup">Backup</a></li>
+						<li><a href="/"><i class="icon-btc"></i>ack to static</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="statusbar" ng-controller="CtrlStatusBar">
+			<div class="container">
+				<span class="btn btn-danger ng-cloak" ng-show="status.minerDown" title="Hopefully it's restarting">
+					cgMiner is DOWN
+				</span>
+				<span class="btn" status-item="status.dtot.MHS5s" good="settings.miningExpHash" bad="settings.miningExpHash*.8" title="cgMiner > Summary > MhsAv">
+					<span ng-bind="status.dtot.MHS5s|mhs"></span>
+					<small> h/s</small>
+				</span>
+				<span class="btn" status-item="status.dtot.devices" good="settings.miningExpDev" bad="settings.miningExpDev-2" title="Running devices">
+					<span ng-bind-template="{{status.dtot.devices}} / {{settings.miningExpDev}}"></span>
+					<small> devs</small>
+				</span>
+				<span class="btn" status-item="status.load" good="0.3" bad="1" title="PHP CPU load 1 minute average">
+					<small>load </small>
+					<span ng-bind="status.load*100|number:1"></span>
+					<small> %</small>
+				</span>
+				<span class="btn" status-item="status.temp" good="35" bad="50" title="Raspberry Pi temperature">
+					<small>temp </small>
+					<span ng-bind="status.temp"></span>
+					<small> °C</small>
+				</span>
+				<div class="peon-settings">
+					<div class="peon-more">
+						<span class="badge" ng-show="counter">{{counter}}s</span>&nbsp;&nbsp;
+						<div class="btn-group">
+							<button class="btn btn-default" ng-click="setRate(-1)"    ng-class="{disabled:statusRate>600000}" title="Stop refreshing">Stop</button>
+							<button class="btn btn-default" ng-click="setRate(1000)"  ng-class="{disabled:statusRate==1000}" title="Refresh data every second">1</button>
+							<button class="btn btn-default" ng-click="setRate(5000)"  ng-class="{disabled:statusRate==5000}" title="Refresh data every 5 seconds">5</button>
+							<button class="btn btn-default" ng-click="setRate(30000)" ng-class="{disabled:statusRate==30000}" title="Refresh data every 30 seconds">30</button>
+						</div>
+					</div>
+					<div class="peon-less">
+						<button class="btn btn-peon" ng-click="tick(1,1)" title="Refresh just once"><i class="icon-refresh" ng-class="{'icon-spin':counter<3}"></i></button>
+						<div class="btn-group ng-cloak" ng-hide="saveHide()">
+							<button class="btn btn-success" ng-click="sync('settings',settings,1)" title="Save changes">Save</button>
+							<button class="btn btn-danger"  ng-click="back()" title="Discard changes">Discard</button>
+						</div>
+						<button class="btn btn-danger ng-cloak" ng-click="settings.devEnable=false" ng-show="settings.devEnable" title="Quit developer mode">Quit devmode</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="peon-alerts" ng-controller="CtrlAlert" ng-click="alertShift()">
+			<div ng-repeat="alert in alerts" class="alert-{{alert.type}} {{$index==0?'alert-top':''}}">{{alert.text}}</div>
+		</div>
+
+		<div ng-view>
+			<h1 class="text-center">
+				Loading angular.js the first time might take some seconds... Hang tight!
+			</h1>
+		</div>
+	</div>
+
+	<footer>
+		<div class="container">
+			<hr />
+			<p>
+				<label class="checkbox-inline pull-right">
+	         <input type="checkbox" id="devEnable" ng-model="settings.devEnable"> Enable developer mode
+	      </label>
+				MinePeon, by <a href='http://mineforeman.com'>MineForeman</a>
+	    </p>
+			<p><a href='http://www.minepeon.com'>MinePeon.com</a> - Follow this project on <a href='https://bitcointalk.org/index.php?topic=137934.10000'>bitcointalk</a>. Contribute on <a href='https://github.com/MineForeman/MinePeon'>Git</a><a href="https://github.com/MineForeman/MinePeonWebUI">Hub</a></p>
+		</div>
+	</footer>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+
+	<script src="js/ng/angular.min.js"></script> 
+	<script src="js/ng/app.js"></script>
+	<script src="js/ng/services.js"></script>
+	<script src="js/ng/controllers.js"></script>
+	<script src="js/ng/filters.js"></script>
+	<script src="js/ng/directives.js"></script>
+	<script src="js/ng/moment.min.js"></script>
+</body>
+</html>

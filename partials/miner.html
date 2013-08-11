@@ -1,0 +1,75 @@
+<br />
+<div class="row">
+	<div class="col-lg-3">
+		<button type="button" ng-click="poolBack();optionBack()" class="btn btn-primary btn-block">Reload miner.user.conf</button>
+	</div>
+	<div class="col-lg-3">
+		<button type="button" ng-click="sync('pools','restart',1)" class="btn btn-warning btn-block">Restart miner now</button>
+	</div>
+	<div class="col-lg-3">
+		<button type="button" ng-click="" class="btn btn-primary btn-block" disabled>button</button>
+	</div>
+	<div class="col-lg-3 text-danger">
+		<button type="button" ng-click="" class="btn btn-primary btn-block" disabled>button</button>
+	</div>
+</div>
+
+<h3>Pools</h3>
+
+<p class="help-block" ng-show="settings.helpEnable">
+	The settings below serve as direct input to the miner. <strong>One little error can and will let the miner crash.</strong>
+</p>
+<form name="poolForm" class="form-horizontal">
+	<div class="row">
+		<label class="col-lg-3">URL</label>
+		<label class="col-lg-3">User</label>
+		<label class="col-lg-3">Pass</label>
+	</div>
+	<div class="form-group" ng-repeat="pool in pools">
+		<div class="col-lg-3">
+			<input type="text" ng-model="pool.url" class="form-control" required>
+		</div>
+		<div class="col-lg-3">
+			<input type="text" ng-model="pool.user" class="form-control" required>
+		</div>
+		<div class="col-lg-3">
+			<input type="text" ng-model="pool.pass" class="form-control" required>
+		</div>
+		<div class="col-lg-3 text-danger">
+			<p class="form-control-static"><a href="" ng-click="poolRemove($index)" class="text-danger">Remove</a></p>
+		</div>
+	</div>
+	<button type="button" ng-click="poolAdd()" class="btn btn-primary">Add pool</button>
+	<button type="button" ng-show="poolForm.$dirty" class="btn btn-danger" ng-click="poolBack()">Discard changes</button>
+	<button type="button" ng-show="poolForm.$dirty && poolForm.$valid" class="btn btn-success" ng-click="poolSave()">Save pools</button>
+</form>
+
+<h3>Options <small><a href="https://github.com/ckolivas/cgminer#readme">more info on GitHub</a></small></h3>
+
+<form name="optionForm" class="form-horizontal optionform">
+	<div class="row">
+		<label class="col-lg-3">Option</label>
+		<label class="col-lg-3">Value</label>
+		<label class="col-lg-6">Info</label>
+	</div>
+	<div class="form-group" ng-repeat="o in options" ng-hide="o.key=='pools'">
+		<div class="col-lg-3">
+			<input type="text" ng-model="o.key" class="form-control input-small" required />
+		</div>
+		<div class="col-lg-3">
+			<input type="text" ng-model="o.value" class="form-control input-small" required />
+		</div>
+		<div class="col-lg-6">
+			<p class="form-control-static"><a href="" ng-click="optionRemove($index)" class="text-danger">Remove</a></p>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-3">
+			<button type="button" ng-click="optionAdd()" class="btn btn-primary">Add option</button>
+		</div>
+		<div class="col-lg-9">
+			<button type="button" ng-show="optionForm.$dirty" class="btn btn-danger" ng-click="optionBack()">Discard changes</button>
+			<button type="button" ng-show="optionForm.$dirty && optionForm.$valid" class="btn btn-success" ng-click="optionSave()">Save config</button>
+		</div>
+	</div>
+</form>

@@ -1,19 +1,27 @@
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap-transition.js"></script>
-    <script src="js/bootstrap-alert.js"></script>
-    <script src="js/bootstrap-modal.js"></script>
-    <script src="js/bootstrap-dropdown.js"></script>
-    <script src="js/bootstrap-scrollspy.js"></script>
-    <script src="js/bootstrap-tab.js"></script>
-    <script src="js/bootstrap-tooltip.js"></script>
-    <script src="js/bootstrap-popover.js"></script>
-    <script src="js/bootstrap-button.js"></script>
-    <script src="js/bootstrap-collapse.js"></script>
-    <script src="js/bootstrap-carousel.js"></script>
-    <script src="js/bootstrap-typeahead.js"></script>
+<footer class="container">
+  <hr />
+  Server Time: <?php echo date('D, d M Y H:i:s T') ?>
 
-  </body>
+  <?php if(empty($settings['donateAmount'])) { echo $plea; } ?>
+</footer>
+
+<script type="text/javascript" src="js/jquery.min.js"></script> 
+<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
+<script type="text/javascript" id="js">
+  $(document).ready(function() {
+    $(".tablesorter").tablesorter();
+    
+    $('#chartToggle').click(function() {
+      $('.chartMore').slideToggle('slow');
+    });
+    $('#alertEnable').click(function() {
+      $(".alert-enabled").toggle(this.checked);
+    });
+    $('#donateEnable').click(function() {
+      $(".donate-enabled").toggle(this.checked);
+    });
+  });
+</script>
+
+</body>
 </html>

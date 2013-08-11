@@ -1,4 +1,7 @@
 AuthUserFile /opt/minepeon/etc/uipassword
 AuthType Basic
 AuthName "MinePeon"
+
+<Files "*.php">
 Require valid-user
+</Files>
