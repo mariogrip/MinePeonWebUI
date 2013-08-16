@@ -3,10 +3,14 @@
 //I will do a lot more work here
 
 require('../../api.php');
+require_once('../../inc/settings.inc.php');
 
 
-if (isset($_GET["type"])){
+if (!($settings['apikey'] == "")){
 if (isset($_GET["API_KEY"])){
+if ($_GET["API_KEY"] == $settings['apikey']){
+if (isset($_GET["type"])){
+
 
 if ($_GET["type"] == "hour"){
 ?>
@@ -33,10 +37,15 @@ if ($_GET["type"] == "year"){
 <img src="../../rrd/mhsav-year.png" alt="mhsav.png" />
 <?php
 }
-
-}else{
-echo "API KEY ERROR!";
 }
+}else{
+echo 'API KEY ERROR! "Wrong Key"';
+}
+}else{
+echo 'API KEY ERROR! "No key"';
+}
+}else{
+echo 'API KEY ERROR! "API is not Enabled"';
 }
 
 ?>

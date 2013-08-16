@@ -3,6 +3,7 @@
 require_once('settings.inc.php');
 require_once('miner.inc.php');
 
+
 // Check for settings to write and do it after all checks
 $writeSettings=false;
 
@@ -36,6 +37,26 @@ if (isset($_POST['miningExpDev'])) {
   $writeSettings=true;
 
 }
+if (isset($_POST['api_nkey'])) {
+  $rand = rand(1, 100000000000);
+  $key = sha1($rand);
+  $settings['apikey'] = $key;
+   $writeSettings=true;
+
+}
+if (isset($_POST['api_enable'])) {
+  $rand = rand(1, 100000000000);
+  $key = sha1($rand);
+  $settings['apikey'] = $key;
+   $writeSettings=true;
+
+}
+if (isset($_POST['api_disable'])) {
+  $settings['apikey'] = "";
+   $writeSettings=true;
+
+}
+
 if (isset($_POST['miningExpHash'])) {
 
   $settings['miningExpHash'] = $_POST['miningExpHash'];
@@ -223,19 +244,19 @@ include('menu.php');
       <div class="form-group alert-enabled <?php echo $settings['alertEnable']?"":"collapse"; ?>">
         <label for="alertDevice" class="control-label col-lg-3">Device Name</label>
         <div class="col-lg-9">
-          <input type="text" value="<?php echo $settings['alertDevice'] ?>" id="alertDevice" name="alertDevice" class="form-control">
+          <input type="text" value="<?php echo $settings['alertDevice'] ?>" id="alertDevice" name="alertDevice" class="form-control" placeholder="MinePeon">
         </div>
       </div>
       <div class="form-group alert-enabled <?php echo $settings['alertEnable']?"":"collapse"; ?>">
         <label for="alertEmail" class="control-label col-lg-3">E-mail</label>
         <div class="col-lg-9">
-          <input type="email" value="<?php echo $settings['alertEmail'] ?>" id="alertEmail" name="alertEmail" class="form-control">
+          <input type="email" value="<?php echo $settings['alertEmail'] ?>" id="alertEmail" name="alertEmail" class="form-control" placeholder="example@example.com">
         </div>
       </div>
       <div class="form-group alert-enabled <?php echo $settings['alertEnable']?"":"collapse"; ?>">
         <label for="alertSmtp" class="control-label col-lg-3">SMTP Server</label>
         <div class="col-lg-9">
-          <input type="text" value="<?php echo $settings['alertSmtp'] ?>" id="alertSmtp" name="alertSmtp" class="form-control">
+          <input type="text" value="<?php echo $settings['alertSmtp'] ?>" id="alertSmtp" name="alertSmtp" class="form-control" placeholder="smtp.myisp.com">
           <p class="help-block">Please choose your own SMTP server.</p>
         </div>
       </div>
@@ -246,6 +267,70 @@ include('menu.php');
       </div>
     </fieldset>
   </form>
+
+
+    <fieldset>
+      <legend>API</legend>
+ <div class="form-group">
+<?php
+if ($settings['apikey'] == ""){
+?>
+<div class="alert">
+    <strong>Warning!</strong> API key is not <strong><a href="javascript:{}" onclick="document.getElementById('api_nkey').submit(); return false;" class="alert-link">Enabled</a></strong>
+</div>
+<?php
+}
+?>
+        <label for="Api_Key" class="control-label col-lg-3">API Key</label>
+     <div class="row">
+  <div class="col-lg-6">
+
+
+<form action="/settings.php" name="api_nkey" method="POST" id="api_nkey">
+<input type="hidden" name="api_nkey">
+</form>
+<form action="/settings.php" name="api_enable" method="POST" id="api_enable">
+<input type="hidden" name="api_enabe">
+</form>
+<form action="/settings.php" name="api_disable" method="POST" id="api_disable">
+<input type="hidden" name="api_disable">
+</form>
+
+    <div class="input-group">
+      <input value="<?php echo $settings['apikey'];?>" type="text" name="api_key" class="form-control">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span></button>
+        <ul class="dropdown-menu pull-right">
+
+          <li><a href="javascript:{}" name="api_nkey" onclick="document.getElementById('api_nkey').submit(); return false;">Create new Key</a></li>
+
+
+        
+<?php
+if ($settings['apikey'] == ""){
+?>
+          <li><a href="javascript:{}" name="api_enable" onclick="document.getElementById('api_enable').submit(); return false;">Enable</a></li>
+<?php
+}else{
+?>
+<li><a href="javascript:{}" name="api_disable" onclick="document.getElementById('api_disable').submit(); return false;">Disable</a></li>
+
+<?php
+}
+?>
+
+        </ul>
+       </div>
+      </div>
+
+
+
+    </div>
+  </div>
+</div>
+    </fieldset>
+  </form>
+
 </div>
 <?php
 include('foot.php');
