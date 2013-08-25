@@ -6,7 +6,7 @@ angular.module('Peon.controllers', [])
 
 
 // Main: stores status
-.controller('CtrlMain', function($scope,$http,$timeout) {
+.controller('CtrlMain', function($scope,$http,$timeout,$window,$filter) {
   // Settings
   $scope.settings={};
   $scope.settingsMaster={};
@@ -15,12 +15,21 @@ angular.module('Peon.controllers', [])
   $scope.options={};
   // Status
   $scope.status={};
-  $scope.status.minerUp=true;
+  $scope.status.minerUp=true;// Be optimistic
   $scope.status.minerDown=false;
-  $scope.statusProm=[];
-  $scope.statusRate = 30000; // Default refresh rate
+  $scope.intervalAuto = true; // Default refresh rate
+  $scope.interval = 20; // Default refresh rate
+  $scope.counter=1;
+  // Live graph
+  $scope.live=[];
+  $scope.settings.liveMax=50;
+  $scope.upTime=0;
+  $scope.upLast=0;
+  $scope.downTime=0;
+  $scope.downLast=0;
+  $scope.downNow=false;
   // Alerts
-  $scope.alerts=[{type:'success',text:'Welcome back!'}];
+  Alertify.log.success('Welcome back!');
 
   // Sync settings
   // Note: not possible to remove settings!
@@ -28,22 +37,20 @@ angular.module('Peon.controllers', [])
     action = action || 'settings';
     data = data || 'load';
     $http.get('f_settings.php?'+action+'='+angular.toJson(data)).success(function(d){
-      if(alert){
-        angular.forEach(d['info'], function(v,k) {$scope.alerts.push(v);});// Add to existing
+      if(alert && d.info){
+        angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
       }
       if(action=='settings'){
         $scope.settings=angular.copy(d['data']);
-        $scope.settingsMaster=angular.copy(d['data']);
       }
       else if(action=='pools'){
-        $scope.pools=d['data']['pools'];
+        $scope.pools=d['data'];
       }
       else if(action=='options'){
         $scope.options=d['data'];
       }
       else if(action=='timezone'){
-        $scope.settings.time=d.data.time;
-        $scope.settingsMaster.time=d.data.time;
+        $scope.settings.date=d.data.date;
       }
     });
   }
@@ -62,110 +69,127 @@ angular.module('Peon.controllers', [])
   $scope.syncDelay(500,'pools');
   $scope.syncDelay(900,'options');
 
-  // Show save button? Should be done with ngform.$dirty
-  $scope.saveHide = function() {
-    return angular.equals( $scope.settings,$scope.settingsMaster);
-  };
-  // Discard settings
-  $scope.back = function() {
-    $scope.settings=angular.copy($scope.settingsMaster);
-  };
-
   // Get status and save in scope
   $scope.tick = function(once,all) {
-    $http.get('f_status.php?'+($scope.settings.devEnable?'dev=1&':'')+(all?'all=1':'')).success(function(d){
-      angular.forEach(d.info,   function(v,k) {$scope.alerts.push(v);});// Add to existing
+    $http.get('f_status.php?'+($scope.settings.userDeveloper?'dev=1&':'')+(all||$scope.upTime==1?'all=1':'')).success(function(d){
+      if(d.info){
+        angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
+      }
       angular.forEach(d.status, function(v,k) {$scope.status[k]=v;});// Overwrite existing
-      if($scope.status.minerDown){
-        $scope.statusProm.push($timeout($scope.tick, 1000));
+      /* Stats in title */
+      $window.document.title="["+$filter('mhs')($scope.status.dtot.MHS5s)+"h] ["+$scope.status.dtot.devices+" dev] MinePeon";
+      /* Live graphs */
+      $scope.live.push([Date.now(),1000000*$scope.status.dtot.MHS5s]);
+      if($scope.live.length>$scope.settings.liveMax){
+        $scope.live=$scope.live.slice(-$scope.settings.liveMax);
       }
-      else if(!once){
-        $scope.statusProm.push($timeout($scope.tick, $scope.statusRate));
+      /* Miner up or down */
+      if(!$scope.downNow && $scope.status.minerDown){
+        $scope.downNow=true;
+        $scope.upTime=0;
+        $scope.downLast=Date.now();
+        Alertify.log.error("Miner seems down");
+        $scope.intervalSet(0);
       }
+      else if($scope.downNow && !$scope.status.minerDown){
+        $scope.downNow=false;
+        $scope.downTime=0;
+        $scope.upLast=Date.now();
+        Alertify.log.success("Miner is up!");
+      }
+      else if($scope.downNow){
+        $scope.interval=$scope.downTime<12?2:Math.floor(Math.sqrt($scope.downTime+1));
+      }
+      else if($scope.intervalAuto){
+        $scope.interval=$scope.upTime>900?30:Math.floor(Math.sqrt($scope.upTime+1));
+      }
+    })
+    .error(function(){
+      /* Stats in title */
+      $window.document.title="[OFF] MinePeon";
+      /* Live graphs */
+      $scope.live.push([Date.now(),0]);
+      if($scope.live.length>$scope.settings.liveMax){
+        $scope.live=$scope.live.slice(-$scope.settings.liveMax);
+      }
+      $scope.interval=10;
     });
-    console.log($scope.settingsMaster)
-    console.log($scope.settings)
   }
-  $scope.tick(0,1);
 
-  // Set rate and update status
-  $scope.setRate = function(value) {
-    angular.forEach($scope.statusProm, function(p) {$timeout.cancel(p)});// Clean up timeouts
-    $scope.statusRate=value>=500?value:600001;
-    $scope.tick(0,1);
+  $scope.intervalSet = function(num) {
+    if(num<2){
+      Alertify.log.success("Automatic refresh rate enabled");
+      $scope.intervalAuto=true;
+      $scope.interval=1;
+    }
+    else{
+      Alertify.log.success("Refresh rate is set to "+$scope.interval);
+      $scope.intervalAuto=false;
+      $scope.interval=num;
+    }
   };
+  var count = function () {
+    $timeout(count, 1000);
+    if($scope.counter>0){
+      $scope.counter--;
+    }
+    else{
+      $scope.counter=$scope.interval-1;
+      $scope.tick();
+    }
+    if($scope.downNow){
+      $scope.downTime++;
+    }
+    else{
+      $scope.upTime++;
+    }
+  };
+  count();
   
-  $scope.optionArr={};
-  $scope.$watch('options', function(b,a) {
-    angular.forEach(b, function(v,k) {$scope.optionArr[k]={key:k};});
+  $scope.$watch('interval', function(b,a) {
+    if($scope.counter>b){
+      $scope.counter=0;
+    }
   });
-})
-
-
-// Alert: removes alerts after some time
-.controller('CtrlAlert', function($scope,$timeout) {
-  var alertProm;
-  // Make alerts disappear after 10 seconds
-  $scope.$watch('alerts', function(b,a) {
-    if(alertProm){}
-      else if(b.length>3){
-        alertProm=$timeout($scope.alertDismiss, 1);
-      }
-      else if(b.length>1){
-        alertProm=$timeout($scope.alertDismiss, 1000);
-      }
-      else if(b.length==1){
-        alertProm=$timeout($scope.alertDismiss, 3000);
-      }
-    }, true);
-  $scope.alertDismiss = function() {
-    alertProm=$timeout($scope.alertShift, 1010);
-    $('.alert-top').addClass('alert-dismiss');
-  };
-  $scope.alertShift = function() {
-    $scope.alerts.shift();
-    alertProm=false;
-  };
 })
 
 
 // Statusbar with realtime updates
 .controller('CtrlStatusBar', function($scope,$timeout) {
-  // Enable tooltips
-  $('span.btn').tooltip({placement:'bottom'});
-  $('button').tooltip({container: 'body'});
+})
 
-  // timer last update
-  $scope.counter=0;
-  $scope.countProm = null;
-  $scope.countLast = Date.now();
 
-  var count = function () {
-    $scope.countProm = $timeout(count, 1000);
-    $scope.counter++;
-  };
+// Statusbar with realtime updates
+.controller('CtrlCounter', function($scope,$timeout) {
 
-  $scope.$watch('status.time', function() {
-    $scope.counter=0;
-    $scope.countLast = Date.now();
-    if($scope.countProm){
-      $timeout.cancel($scope.countProm);
-    }
-    count();
-  }, true);
+
 })
 
 
 .controller('CtrlStatus', function($scope) {
-  // Enable tooltips
-  $('th div').tooltip();
+  
 })
 
 
-.controller('CtrlMiner', function($scope) {
+.controller('CtrlMiner', function($scope,$http,$timeout) {
 
-  $scope.poolAdd = function() {
-    $scope.pools.push({});
+  $scope.cgminer = function(command,parameter) {
+    $scope.tick();
+
+    var execute = function(){
+      $http.get('f_miner.php?command='+(command || 'summary')+'&parameter='+parameter).success(function(d){
+        if(d.info){
+          angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
+        }
+        $scope.tick();
+      });
+    }
+    $timeout(execute, 1000);
+  }
+
+  $scope.poolAdd = function(a) {
+    a = a || {};
+    $scope.pools.push(a);
     $scope.poolForm.$setDirty()
   };
   $scope.poolRemove = function(index) {
@@ -181,8 +205,9 @@ angular.module('Peon.controllers', [])
     $scope.poolForm.$setPristine();
   };
 
-  $scope.optionAdd = function() {
-    $scope.options.push({});
+  $scope.optionAdd = function(a) {
+    a = a || {};
+    $scope.options.push(a);
     $scope.optionForm.$setDirty()
   };
   $scope.optionRemove = function(index) {
@@ -206,16 +231,14 @@ angular.module('Peon.controllers', [])
 
 .controller('CtrlBackup', function($scope,$http,$timeout) {
   $scope.thisFolder = '/opt/minepeon/';
-  $scope.backupFolder = '/opt/minepeon/etc/backup/';
+  $scope.backupFolder = '/opt/minepeon/backup/';
   $scope.backupName = GetDateTime();
   $scope.backups = [];
   $scope.restoring = 0;
   $scope.items = [
   {selected:true,name:'etc/minepeon.conf'},
-  {selected:true,name:'etc/miner.user.conf'},
-  {selected:true,name:'etc/miner.conf'},
-  {selected:true,name:'etc/uipassword'},
-  {selected:true,name:'var/rrd'}
+  {selected:true,name:'etc/miner.pools.json'},
+  {selected:true,name:'etc/miner.options.json'}
   ];
   
   $scope.addItem = function() {
@@ -233,7 +256,9 @@ angular.module('Peon.controllers', [])
 
   $scope.backupLocal = function() {
     var promise = $http.get('f_backup.php?name='+$scope.backupName+'&backup='+angular.toJson($scope.items)).success(function(d){
-      angular.forEach(d.info, function(v,k) {$scope.alerts.push(v);});// Add to existing
+      if(d.info){
+        angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
+      }
       angular.forEach(d.data, function(v,k) {
         if(v.success){
           $scope.items[k].bak=true;
@@ -265,7 +290,9 @@ angular.module('Peon.controllers', [])
 
   $scope.restore = function() {
     $http.get('f_backup.php?restore='+$scope.backups[$scope.restoring].dir).success(function(d){
-      angular.forEach(d.info, function(v,k) {$scope.alerts.push(v);});// Add to existing
+      if(d.info){
+        angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
+      }
       $scope.syncDelay(300,'settings');
       $scope.syncDelay(600,'pools');
       $scope.syncDelay(900,'options');
