@@ -44,15 +44,13 @@ $Utility = 0;
 
 if(!empty($r['status']['devs'])){
   foreach ($r['status']['devs'] as $id => $dev) {
-    if ($dev['MHS5s'] > 0) {
-      $devices++;
-      $MHS5s = $MHS5s + $dev['MHS5s'];
-      $MHSav = $MHSav + $dev['MHSav'];
-      $Accepted = $Accepted + $dev['Accepted'];
-      $Rejected = $Rejected + $dev['Rejected'];
-      $HardwareErrors = $HardwareErrors + $dev['HardwareErrors'];
-      $Utility = $Utility + $dev['Utility'];
-    }
+    $devices++;
+    $MHS5s = $MHS5s + $dev['MHS5s'];
+    $MHSav = $MHSav + $dev['MHSav'];
+    $Accepted = $Accepted + $dev['Accepted'];
+    $Rejected = $Rejected + $dev['Rejected'];
+    $HardwareErrors = $HardwareErrors + $dev['HardwareErrors'];
+    $Utility = $Utility + $dev['Utility'];
     $r['status']['devs'][$id]['TotalShares']=$dev['Accepted']+$dev['Rejected']+$dev['HardwareErrors'];
   }
 }
