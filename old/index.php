@@ -11,7 +11,7 @@ create_graph("mhsav-month.png", "-1m", "Last Month");
 create_graph("mhsav-year.png", "-1y", "Last Year");
 
 function create_graph($output, $start, $title) {
-  $RRDPATH = '/opt/minepeon/var/rrd/';
+  $RRDPATH = '/opt/minepeon/http/rrd/';
   $options = array(
     "--slope-mode",
     "--start", $start,

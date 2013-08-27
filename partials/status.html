@@ -1,4 +1,28 @@
-<div class="livechart" id="qsdf" live="live"></div>
+<div ng-hide="showStatic">
+  <div class="livechart" id="qsdf" live="live"></div>
+</div>
+
+<div ng-show="showStatic" class="text-center">
+  <br />
+  <p>
+    <img src="/rrd/mhsav-hour.png" alt="/mhsav.png" />
+    <img src="/rrd/mhsav-day.png" alt="/mhsav.png" />
+  </p>
+  <p>
+    <img src="/rrd/mhsav-week.png" alt="mhsav.png" />
+    <img src="/rrd/mhsav-month.png" alt="mhsav.png" />
+  </p>
+  <p>
+    <img src="/rrd/mhsav-year.png" alt="mhsav.png" />
+    <br/>
+    <a href="old/index.php">Update</a>
+  </p>
+</div>
+
+<p class="text-center">
+  <a href="" ng-click="showStatic=false">Live charts</a> - 
+  <a href="" ng-click="showStatic=true">Static charts</a>
+</p>
 
 <div ng-hide="status.devs" class='alert alert-danger'>No devices running</div>
 <h3 ng-show="status.devs">Devices</h3>

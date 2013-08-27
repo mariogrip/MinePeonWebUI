@@ -37,7 +37,7 @@ angular.module('Peon.controllers', [])
     action = action || 'settings';
     data = data || 'load';
     $http.get('f_settings.php?'+action+'='+angular.toJson(data)).success(function(d){
-      if(alert && d.info){
+      if(d.info){
         angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
       }
       if(action=='settings'){
@@ -98,10 +98,10 @@ angular.module('Peon.controllers', [])
         Alertify.log.success("Miner is up!");
       }
       else if($scope.downNow){
-        $scope.interval=$scope.downTime<12?2:Math.floor(Math.sqrt($scope.downTime+1));
+        $scope.interval=$scope.downTime<12?2:Math.floor(Math.sqrt($scope.downTime+1)*2);
       }
       else if($scope.intervalAuto){
-        $scope.interval=$scope.upTime>900?30:Math.floor(Math.sqrt($scope.upTime+1));
+        $scope.interval=$scope.upTime>225?30:Math.floor(Math.sqrt($scope.upTime+1)*2);
       }
     })
     .error(function(){
