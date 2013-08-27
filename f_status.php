@@ -67,8 +67,12 @@ $r['status']['dtot']=array(
 
 // CPU intensive stuff
 if(!empty($_REQUEST['all'])){
-  $r['status']['uptime'] = explode(' ', exec('cat /proc/uptime'));
-  $r['status']['temp'] = exec('cat /sys/class/thermal/thermal_zone0/temp')/1000;
+  $r['status']['pi']['uptime'] = explode(' ', exec('cat /proc/uptime'))[0];
+  $r['status']['pi']['temp'] = exec('cat /sys/class/thermal/thermal_zone0/temp')/1000;
+
+  // What other interesting stuff is in summary?
+  $summary=cgminer('summary');
+  $r['status']['uptime'] = $summary['data']['SUMMARY'][0]['Elapsed'];
 }
 
 $r['status']['load'] = sys_getloadavg()[0];
