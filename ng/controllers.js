@@ -37,7 +37,7 @@ angular.module('Peon.controllers', [])
     action = action || 'settings';
     data = data || 'load';
     $http.get('f_settings.php?'+action+'='+angular.toJson(data)).success(function(d){
-      if(alert && d.info){
+      if(d.info){
         angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
       }
       if(action=='settings'){
