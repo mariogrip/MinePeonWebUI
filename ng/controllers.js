@@ -173,6 +173,20 @@ angular.module('Peon.controllers', [])
 
 .controller('CtrlMiner', function($scope,$http,$timeout) {
 
+  $scope.minerCompat = function(command,parameter) {
+    $http.get('f_minercompat.php').success(function(d){
+      if(d.info){
+        angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
+      }
+      if(d.data.pools){
+        $scope.pools=d.data.pools;
+      }
+      if(d.data.options){
+        $scope.options=d.data.options;
+      }
+    });
+  }
+
   $scope.cgminer = function(command,parameter) {
     $scope.tick();
 
