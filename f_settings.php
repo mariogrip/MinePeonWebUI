@@ -57,8 +57,13 @@ elseif (!empty($_REQUEST['pools'])) {
     $r['info'][]=array('type' => 'success', 'text' => 'Pools config saved');
   }
   // Load current settings
-  else{
+  elseif(!empty($r['data'])&&is_array($r['data'])){
     $r['info'][]=array('type' => 'info', 'text' => 'Pools config loaded');
+  }
+  // Load new settings
+  else{
+    $r['data']=array(array("url"=>"empty"));
+    $r['info'][]=array('type' => 'error', 'text' => 'Pools config not found');
   }
 }
 
@@ -75,8 +80,13 @@ elseif (!empty($_REQUEST['options'])) {
     $r['info'][]=array('type' => 'success', 'text' => 'Miner options saved');
   }
   // Load current settings
-  else{
+  elseif(!empty($r['data'])&&is_array($r['data'])){
     $r['info'][]=array('type' => 'info', 'text' => 'Miner options loaded');
+  }
+  // Load new settings
+  else{
+    $r['data']=array(array("key"=>"algo","value"=>"c"));
+    $r['info'][]=array('type' => 'error', 'text' => 'Miner options not found');
   }
 }
 
