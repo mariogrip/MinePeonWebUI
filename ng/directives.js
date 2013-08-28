@@ -27,8 +27,8 @@ angular.module('Peon.directives', [])
 // Toggles .active based on $location.path()
 .directive('menuActive', function($rootScope,$location) {
   return function(scope, element, attrs) {
-    $rootScope.$on("$routeChangeStart", function (event, next, current) {
-      (element.children()[0].hash === "#"+$location.path()) ? element.addClass("active") : element.removeClass("active");
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+      (element.children()[0].hash === '#'+$location.path()) ? element.addClass('active') : element.removeClass('active');
     });
   }
 })
@@ -75,10 +75,10 @@ angular.module('Peon.directives', [])
         tooltip: {
           formatter: function() {
             var hs=this.y/1000,h=this.y+' ';
-            if(hs > 10){h=hs.toPrecision(4)+" k";}hs/=1000;
-            if(hs > 10){h=hs.toPrecision(4)+" M";}hs/=1000;
-            if(hs > 10){h=hs.toPrecision(4)+" G";}hs/=1000;
-            if(hs > 10){h=hs.toPrecision(4)+" T";}
+            if(hs > 10){h=hs.toPrecision(4)+' k';}hs/=1000;
+            if(hs > 10){h=hs.toPrecision(4)+' M';}hs/=1000;
+            if(hs > 10){h=hs.toPrecision(4)+' G';}hs/=1000;
+            if(hs > 10){h=hs.toPrecision(4)+' T';}
             return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+ h +'h/s';
           }
         },
@@ -102,7 +102,7 @@ angular.module('Peon.directives', [])
       });
 
 var liveTrack=0;
-scope.$watch("live", function (newlist) {
+scope.$watch('live', function (newlist) {
   var n=angular.copy(newlist);
   if(!n || !n.length)return;
   if(liveTrack<2){

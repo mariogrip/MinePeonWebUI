@@ -16,11 +16,11 @@
       <label class="control-label col-sm-3 col-md-2">Refresh rate</label>
       <div class="col-sm-3 col-md-4">
         <div class="btn-group">
-          <button type="button" class="btn {{intervalAuto?'btn-primary':'btn-default'}}" ng-click="intervalSet(0)">Auto<span ng-show="intervalAuto">: {{interval}}</span></button>
-          <button type="button" class="btn {{!intervalAuto&&interval==2?'btn-primary':'btn-default'}}" ng-click="intervalSet(2)">2</button>
-          <button type="button" class="btn {{!intervalAuto&&interval==5?'btn-primary':'btn-default'}}" ng-click="intervalSet(5)">5</button>
-          <button type="button" class="btn {{!intervalAuto&&interval==20?'btn-primary':'btn-default'}}" ng-click="intervalSet(20)">20</button>
-          <button type="button" class="btn {{!intervalAuto&&interval==300?'btn-primary':'btn-default'}}" ng-click="intervalSet(300)">300</button>
+          <button type="button" class="btn btn-{{intervalAuto?'primary':'default'}}" ng-click="intervalSet(0)">Auto<span ng-show="intervalAuto">: {{interval}}</span></button>
+          <button type="button" class="btn btn-{{intervalMax==2?'primary':'default'}}" ng-click="intervalSet(2)">2</button>
+          <button type="button" class="btn btn-{{intervalMax==5?'primary':'default'}}" ng-click="intervalSet(5)">5</button>
+          <button type="button" class="btn btn-{{intervalMax==20?'primary':'default'}}" ng-click="intervalSet(20)">20</button>
+          <button type="button" class="btn btn-{{intervalMax==300?'primary':'default'}}" ng-click="intervalSet(300)">300</button>
         </div>
       </div>
       <label for="liveMax" class="control-label col-sm-3 col-md-2">Graph points</label>
