@@ -77,7 +77,7 @@ angular.module('Peon.controllers', [])
       }
       angular.forEach(d.status, function(v,k) {$scope.status[k]=v;});// Overwrite existing
       /* Stats in title */
-      $window.document.title="["+$filter('mhs')($scope.status.dtot.MHS5s)+"h] ["+$scope.status.dtot.devices+" dev] MinePeon";
+      $window.document.title='['+$filter('mhs')($scope.status.dtot.MHS5s)+'h] ['+$scope.status.dtot.devices+' dev] MinePeon';
       /* Live graphs */
       $scope.live.push([Date.now(),1000000*$scope.status.dtot.MHS5s]);
       if($scope.live.length>$scope.settings.liveMax){
@@ -88,14 +88,14 @@ angular.module('Peon.controllers', [])
         $scope.downNow=true;
         $scope.upTime=0;
         $scope.downLast=Date.now();
-        Alertify.log.error("Miner seems down");
+        Alertify.log.error('Miner seems down');
         $scope.intervalSet(0);
       }
       else if($scope.downNow && !$scope.status.minerDown){
         $scope.downNow=false;
         $scope.downTime=0;
         $scope.upLast=Date.now();
-        Alertify.log.success("Miner is up!");
+        Alertify.log.success('Miner is up!');
       }
       else if($scope.downNow){
         $scope.interval=$scope.downTime<12?2:Math.floor(Math.sqrt($scope.downTime+1)*2);
@@ -106,7 +106,7 @@ angular.module('Peon.controllers', [])
     })
     .error(function(){
       /* Stats in title */
-      $window.document.title="[OFF] MinePeon";
+      $window.document.title='[OFF] MinePeon';
       /* Live graphs */
       $scope.live.push([Date.now(),0]);
       if($scope.live.length>$scope.settings.liveMax){
@@ -118,12 +118,12 @@ angular.module('Peon.controllers', [])
 
   $scope.intervalSet = function(num) {
     if(num<2){
-      Alertify.log.success("Automatic refresh rate enabled");
+      Alertify.log.success('Automatic refresh rate enabled');
       $scope.intervalAuto=true;
       $scope.interval=1;
     }
     else{
-      Alertify.log.success("Refresh rate is set to "+$scope.interval);
+      Alertify.log.success('Refresh rate is set to '+$scope.interval);
       $scope.intervalAuto=false;
       $scope.interval=num;
     }
