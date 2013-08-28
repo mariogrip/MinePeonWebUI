@@ -15,12 +15,16 @@ $pools=cgminer('pools');
 if(!empty($devs['data']['DEVS'])){
   $r['status']['devs'] = $devs['data']['DEVS'];
 }
+else{
+  $r['status']['devs'] = array();
+}
 if(!empty($pools['data']['POOLS'])){
   $r['status']['pools'] = $pools['data']['POOLS'];
   $r['status']['minerUp'] = true;
   $r['status']['minerDown'] = false;
 }
 else{
+  $r['status']['pools'] = array();
   $r['status']['minerUp'] = false;
   $r['status']['minerDown'] = true;
 }
