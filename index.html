@@ -14,7 +14,7 @@
 </head>
 <body ng-controller="CtrlMain">
   <header class="navbar navbar-static-top navbar-default peon-trigger" role="banner">
-    <div class="container" ng-controller="CtrlStatusBar">
+    <div class="container">
       <div class="navbar-header">
         <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
           <span class="icon-bar"></span>
@@ -23,12 +23,11 @@
         </button>
         <a ng-href="#/status" class="navbar-brand">MinePeon</a>
       </div>
-      <div class="navbar-collapse collapse" ng-controller="CtrlCounter">
+      <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
           <li menu-active>
             <a ng-href="#/status">
-              <b>{{status.dtot.MHS5s|mhs}}</b>h/s&nbsp;&nbsp;
-              <b>{{status.dtot.devices}}</b>/{{settings.miningExpDev}}&nbsp;devs
+              <b>{{title}}</b>
             </a>
           </li>
           <li menu-active><a ng-href="#/miner">Miner</a></li>

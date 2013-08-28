@@ -15,21 +15,18 @@ angular.module('Peon.controllers', [])
   $scope.options={};
   // Status
   $scope.status={};
-  $scope.status.minerUp=true;// Be optimistic
-  $scope.status.minerDown=false;
-  $scope.intervalAuto = true; // Default refresh rate
-  $scope.interval = 20; // Default refresh rate
-  $scope.counter=1;
+  $scope.status.extra=true; // Request extra data
+  $scope.title="Init interface";
+  // Refresh
+  $scope.intervalAuto = true; // Automatically adjust interval
+  $scope.intervalMax = 20; // Default refresh rate
   // Live graph
   $scope.live=[];
   $scope.settings.liveMax=50;
-  $scope.upTime=0;
   $scope.upLast=0;
-  $scope.downTime=0;
   $scope.downLast=0;
-  $scope.downNow=false;
   // Alerts
-  Alertify.log.success('Welcome back!');
+  Alertify.log.delay=10000;
 
   // Sync settings
   // Note: not possible to remove settings!
@@ -66,65 +63,44 @@ angular.module('Peon.controllers', [])
 
   // Sync settings
   $scope.sync('settings')
-  $scope.syncDelay(500,'pools');
-  $scope.syncDelay(900,'options');
 
   // Get status and save in scope
   $scope.tick = function(once,all) {
-    $http.get('f_status.php?'+($scope.settings.userDeveloper?'dev=1&':'')+(all||$scope.upTime==1?'all=1':'')).success(function(d){
+    $http.get('f_status.php?'+($scope.settings.userDeveloper?'dev=1&':'')+(all||$scope.status.extra?'all=1':'')).success(function(d){
       if(d.info){
         angular.forEach(d.info, function(v,k) {Alertify.log.create(v.type, v.text);});
       }
-      angular.forEach(d.status, function(v,k) {$scope.status[k]=v;});// Overwrite existing
-      /* Stats in title */
-      $window.document.title='['+$filter('mhs')($scope.status.dtot.MHS5s)+'h] ['+$scope.status.dtot.devices+' dev] MinePeon';
-      /* Live graphs */
+      // Update status
+      angular.forEach(d.status, function(v,k) {$scope.status[k]=v;});
+      // Title
+      $scope.title='['+$filter('mhs')($scope.status.dtot.MHS5s)+'h] ['+$scope.status.dtot.devices+' dev]';
+      // Stop requesting extra data
+      $scope.status.extra=false;
+    })
+    .error(function(){
+      // Title
+      $scope.title='[OFF]';
+    })
+    .then(function(){
+      // Live Graphs
       $scope.live.push([Date.now(),1000000*$scope.status.dtot.MHS5s]);
       if($scope.live.length>$scope.settings.liveMax){
         $scope.live=$scope.live.slice(-$scope.settings.liveMax);
       }
-      /* Miner up or down */
-      if(!$scope.downNow && $scope.status.minerDown){
-        $scope.downNow=true;
-        $scope.upTime=0;
-        $scope.downLast=Date.now();
-        Alertify.log.error('Miner seems down');
-        $scope.intervalSet(0);
+      // Manage interval
+      if($scope.interval<$scope.intervalMax){
+        $scope.interval++;
       }
-      else if($scope.downNow && !$scope.status.minerDown){
-        $scope.downNow=false;
-        $scope.downTime=0;
-        $scope.upLast=Date.now();
-        Alertify.log.success('Miner is up!');
-      }
-      else if($scope.downNow){
-        $scope.interval=$scope.downTime<12?2:Math.floor(Math.sqrt($scope.downTime+1)*2);
-      }
-      else if($scope.intervalAuto){
-        $scope.interval=$scope.upTime>225?30:Math.floor(Math.sqrt($scope.upTime+1)*2);
-      }
-    })
-    .error(function(){
-      /* Stats in title */
-      $window.document.title='[OFF] MinePeon';
-      /* Live graphs */
-      $scope.live.push([Date.now(),0]);
-      if($scope.live.length>$scope.settings.liveMax){
-        $scope.live=$scope.live.slice(-$scope.settings.liveMax);
-      }
-      $scope.interval=10;
     });
   }
 
   $scope.intervalSet = function(num) {
     if(num<2){
-      Alertify.log.success('Automatic refresh rate enabled');
-      $scope.intervalAuto=true;
-      $scope.interval=1;
+      $scope.intervalAuto=!$scope.intervalAuto;
+      if($scope.intervalAuto) $scope.interval=1;
     }
     else{
-      Alertify.log.success('Refresh rate is set to '+$scope.interval);
-      $scope.intervalAuto=false;
+      $scope.intervalMax=num;
       $scope.interval=num;
     }
   };
@@ -137,41 +113,50 @@ angular.module('Peon.controllers', [])
       $scope.counter=$scope.interval-1;
       $scope.tick();
     }
-    if($scope.downNow){
-      $scope.downTime++;
-    }
-    else{
-      $scope.upTime++;
-    }
   };
   count();
   
-  $scope.$watch('interval', function(b,a) {
+  $scope.$watch('title', function(b,a) {
+    $window.document.title=b+' MinePeon';
+  });
+  
+  $scope.$watch('intervalAuto', function(b,a) {
+    Alertify.log.info('Automatic refresh rate '+(b?'en':'dis')+'abled');
+  });
+  
+  $scope.$watch('intervalMax', function(b,a) {
+    Alertify.log.info('Refresh rate is now '+b);
     if($scope.counter>b){
       $scope.counter=0;
     }
+    $scope.status.extra=true;
+  });
+
+  $scope.$watch('status.minerDown', function(b,a) {
+    if(b){
+      $scope.upLast=Date.now();
+      Alertify.log.error('Miner seems down');
+    }
+    else{
+      $scope.downLast=Date.now();
+      Alertify.log.success('Miner is up!');
+    }
+    $scope.interval=1;
+    $scope.counter=0;
+    $scope.status.extra=true;
   });
 })
 
 
-// Statusbar with realtime updates
-.controller('CtrlStatusBar', function($scope,$timeout) {
-})
-
-
-// Statusbar with realtime updates
-.controller('CtrlCounter', function($scope,$timeout) {
-
-
-})
-
-
 .controller('CtrlStatus', function($scope) {
-  
+  $scope.status.extra=true;
 })
 
 
 .controller('CtrlMiner', function($scope,$http,$timeout) {
+  $scope.status.extra=true;
+  $scope.sync('pools');
+  $scope.sync('options');
 
   $scope.minerCompat = function(command,parameter) {
     $http.get('f_minercompat.php').success(function(d){
@@ -240,6 +225,7 @@ angular.module('Peon.controllers', [])
 
 
 .controller('CtrlSettings', function($scope) {
+  $scope.status.extra=true;
 })
 
 
