@@ -27,7 +27,7 @@ function cgminer($command='summary',$parameter=false){
 
     // Add api response
     $r['data'] = json_decode($response, true);
-    $r['info'][]=array('type' => 'success', 'text' => 'Miner: '.$command);
+    $r['info'][]=array('type' => 'info', 'text' => 'Miner: '.$command);
   }
 
   return $r;
