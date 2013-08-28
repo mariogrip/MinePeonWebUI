@@ -73,13 +73,13 @@ angular.module('Peon.controllers', [])
       // Update status
       angular.forEach(d.status, function(v,k) {$scope.status[k]=v;});
       // Title
-      $scope.title='['+$filter('mhs')($scope.status.dtot.MHS5s)+'h] ['+$scope.status.dtot.devices+' dev]';
+      $scope.title=$scope.status.minerDown?'Miner DOWN -':'['+$filter('mhs')($scope.status.dtot.MHS5s)+'h] ['+$scope.status.dtot.devices+' dev]';
       // Stop requesting extra data
       $scope.status.extra=false;
     })
     .error(function(){
       // Title
-      $scope.title='[OFF]';
+      $scope.title='Apache DOWN -';
     })
     .then(function(){
       // Live Graphs
