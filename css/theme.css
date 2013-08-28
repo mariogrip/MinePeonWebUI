@@ -35,6 +35,9 @@ td,th{
 .table-right td.text-left,.table-right tfoot th.text-left{
   text-align: left
 }
+tr.text-muted{
+  background: #f5f5f5;
+}
 
 /* Index / Shorten wide values in tables and show them on hover */
 .ellipsis{
