@@ -74,16 +74,18 @@ angular.module('Peon.controllers', [])
       angular.forEach(d.status, function(v,k) {$scope.status[k]=v;});
       // Title
       $scope.title=$scope.status.minerDown?'Miner DOWN -':'['+$filter('mhs')($scope.status.dtot.MHS5s)+'h] ['+$scope.status.dtot.devices+' dev]';
+      // Live Graphs
+      $scope.live.push([Date.now(),1000000*$scope.status.dtot.MHS5s]);
       // Stop requesting extra data
       $scope.status.extra=false;
     })
     .error(function(){
       // Title
       $scope.title='Apache DOWN -';
+      // Live Graphs
+      $scope.live.push([Date.now(),0]);
     })
     .then(function(){
-      // Live Graphs
-      $scope.live.push([Date.now(),1000000*$scope.status.dtot.MHS5s]);
       if($scope.live.length>$scope.settings.liveMax){
         $scope.live=$scope.live.slice(-$scope.settings.liveMax);
       }
