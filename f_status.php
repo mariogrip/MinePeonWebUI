@@ -77,7 +77,15 @@ if(!empty($_REQUEST['all'])){
 
   // What other interesting stuff is in summary?
   $summary=cgminer('summary');
-  $r['status']['uptime'] = $summary['data']['SUMMARY'][0]['Elapsed'];
+  if(!empty($summary['data']['SUMMARY'][0]['Elapsed'])){
+    $r['status']['uptime'] = $summary['data']['SUMMARY'][0]['Elapsed'];
+  }
+  elseif(!empty($summary['SUMMARY'][0]['Elapsed'])){
+    $r['status']['uptime'] = $summary['SUMMARY'][0]['Elapsed'];
+  }
+  else{
+    $r['status']['uptime'] = 0;
+  }
 }
 
 $r['status']['load'] = sys_getloadavg()[0];
