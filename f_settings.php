@@ -12,7 +12,7 @@ $configPools=$configFolder.'miner.pools.json';
 $configMiner=$configFolder.'miner.conf';
 
 // Set new password
-if (!empty($_REQUEST['pass'])) {
+if (isset($_REQUEST['pass'])) {
   $pass=json_decode($_REQUEST['pass']);
   if (strlen($pass) > 0) {
     file_put_contents($configUipwd,'minepeon:' . crypt($pass));
