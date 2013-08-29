@@ -80,9 +80,6 @@ if(!empty($_REQUEST['all'])){
   if(!empty($summary['data']['SUMMARY'][0]['Elapsed'])){
     $r['status']['uptime'] = $summary['data']['SUMMARY'][0]['Elapsed'];
   }
-  elseif(!empty($summary['SUMMARY'][0]['Elapsed'])){
-    $r['status']['uptime'] = $summary['SUMMARY'][0]['Elapsed'];
-  }
   else{
     $r['status']['uptime'] = 0;
   }
