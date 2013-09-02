@@ -72,6 +72,7 @@ $r['status']['dtot']=array(
 
 // CPU intensive stuff
 if(!empty($_REQUEST['all'])){
+  $r['status']['pi']['load'] = sys_getloadavg()[2];
   $r['status']['pi']['uptime'] = explode(' ', exec('cat /proc/uptime'))[0];
   $r['status']['pi']['temp'] = exec('cat /sys/class/thermal/thermal_zone0/temp')/1000;
 
@@ -85,7 +86,6 @@ if(!empty($_REQUEST['all'])){
   }
 }
 
-$r['status']['load'] = sys_getloadavg()[0];
 $r['status']['time'] = time();
 
 echo json_encode($r);

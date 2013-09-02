@@ -59,21 +59,23 @@
     <div class="container">
       <hr />
       <p>
-        <label class="checkbox-inline pull-right">
-          <input type="checkbox" id="userDeveloper" ng-model="settings.userDeveloper"> Enable developer mode
-        </label>
+        <span class="pull-right">
+          Miner {{status.uptime|duration}}
+          &nbsp;-&nbsp;
+          Pi {{status.pi.uptime|duration}}
+          &nbsp;-&nbsp;
+          Temp {{status.pi.temp}} °C
+          &nbsp;-&nbsp;
+          Load {{100*status.pi.load|number:0}}
+        </span>
         <a href='http://www.minepeon.com'>MinePeon</a>, by <a href='http://mineforeman.com'>MineForeman</a> under GPLv3 License
       </p>
       <p>
+        <label class="checkbox-inline pull-right">
+          <input type="checkbox" id="userDeveloper" ng-model="settings.userDeveloper"> Enable developer mode
+        </label>
         Follow this project on <a href='https://bitcointalk.org/index.php?topic=137934.10000'>bitcointalk</a>.
         Contribute on <a href="https://github.com/MineForeman/MinePeonWebUI">Github</a>
-        <span class="pull-right">
-          Miner {{status.uptime|duration}}
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Pi {{status.pi.uptime|duration}}
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Temp {{status.pi.temp}} °C
-        </span>
       </p>
     </div>
   </footer>
