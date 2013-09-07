@@ -1,5 +1,7 @@
 'use strict';
 
+if (window.location.protocol != "https:")
+    window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
 
 // Declare app level module which depends on filters, and services
 angular.module('Peon', ['Peon.filters', 'Peon.services', 'Peon.directives', 'Peon.controllers'])
