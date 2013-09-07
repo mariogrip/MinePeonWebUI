@@ -13,24 +13,24 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label col-sm-3 col-md-2">Refresh rate</label>
+      <label class="control-label col-sm-3 col-md-2">Graph interval</label>
       <div class="col-sm-3 col-md-4">
         <div class="btn-group">
           <button type="button" class="btn btn-{{intervalAuto?'primary':'default'}}" ng-click="intervalSet(0)">Auto<span ng-show="intervalAuto">: {{interval}}</span></button>
-          <button type="button" class="btn btn-{{intervalMax==2?'primary':'default'}}" ng-click="intervalSet(2)">2</button>
-          <button type="button" class="btn btn-{{intervalMax==5?'primary':'default'}}" ng-click="intervalSet(5)">5</button>
-          <button type="button" class="btn btn-{{intervalMax==20?'primary':'default'}}" ng-click="intervalSet(20)">20</button>
-          <button type="button" class="btn btn-{{intervalMax==300?'primary':'default'}}" ng-click="intervalSet(300)">300</button>
+          <button type="button" class="btn btn-{{intervalMax==3?'primary':'default'}}" ng-click="intervalSet(3)">3</button>
+          <button type="button" class="btn btn-{{intervalMax==10?'primary':'default'}}" ng-click="intervalSet(10)">10</button>
+          <button type="button" class="btn btn-{{intervalMax==30?'primary':'default'}}" ng-click="intervalSet(30)">30</button>
+          <button type="button" class="btn btn-{{intervalMax==200?'primary':'default'}}" ng-click="intervalSet(200)">200</button>
         </div>
       </div>
       <label for="liveMax" class="control-label col-sm-3 col-md-2">Graph points</label>
       <div class="col-sm-3 col-md-4">
-        <input type="number" id="liveMax" ng-model="settings.liveMax" class="form-control" required>
+        <input type="number" id="liveMax" ng-model="settings.liveMax" placeholder="Default: 50" class="form-control" required>
       </div>
       <div class="col-sm-9 col-md-10 col-sm-offset-3 col-md-offset-2">
         <p class="help-block" ng-show="settings.userHelp">
-          <b>Auto</b>matic will refresh quickly on page load or if the miner was down recently. The refresh interval will slowly rise upto 30.<br />
-          This has no effect on the rrd stats.
+          <b>Auto</b>matic will refresh quickly on page load or if the miner was down recently. The refresh interval will slowly rise.<br />
+          <b>Graph points</b> is the amount of data points shown on the live graph. 50 is good.
         </p>
       </div>
     </div>

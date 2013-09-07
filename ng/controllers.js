@@ -152,6 +152,7 @@ angular.module('Peon.controllers', [])
 
 .controller('CtrlStatus', function($scope,$http) {
   $scope.status.extra=true;
+  $scope.num=0;
 
   $scope.graphUpdate = function() {
     $http.get('f_graph.php').success(function(d){
@@ -161,6 +162,7 @@ angular.module('Peon.controllers', [])
       else{
         Alertify.log.error("Update graph ended in error");
       }
+      $scope.num++;
     }).error(function(){
       Alertify.log.error("Update graph ended in error: https enabled?");
     });
