@@ -1,28 +1,41 @@
-<div ng-hide="showStatic">
-  <div class="livechart" id="qsdf" live="live"></div>
+
+<div ng-hide="graphShowLive">
+  <h3>
+    Graphs
+    <small>
+      Static - 
+      <a href ng-click="graphShowLive=true">Live</a> - 
+      <a href ng-click="graphUpdate()">Refresh</a> - 
+      <a href ng-click="graphMore=!graphMore">More</a>
+    </small>
+  </h3>
+
+  <p class="text-center">
+    <img ng-src="/rrd/mhsav-hour.png?{{num}}" alt="/mhsav.png" />
+    <img ng-src="/rrd/mhsav-day.png?{{num}}" alt="/mhsav.png" />
+  </p>
+  <p class="text-center" ng-show="graphMore">
+    <img ng-src="/rrd/mhsav-week.png?{{num}}" alt="mhsav.png" />
+    <img ng-src="/rrd/mhsav-month.png?{{num}}" alt="mhsav.png" />
+  </p>
+  <p class="text-center" ng-show="graphMore">
+    <img ng-src="/rrd/mhsav-year.png?{{num}}" alt="mhsav.png" />
+  </p>
 </div>
 
-<div ng-show="showStatic" class="text-center">
-  <br />
-  <p>
-    <img src="/rrd/mhsav-hour.png" alt="/mhsav.png" />
-    <img src="/rrd/mhsav-day.png" alt="/mhsav.png" />
-  </p>
-  <p>
-    <img src="/rrd/mhsav-week.png" alt="mhsav.png" />
-    <img src="/rrd/mhsav-month.png" alt="mhsav.png" />
-  </p>
-  <p>
-    <img src="/rrd/mhsav-year.png" alt="mhsav.png" />
-    <br/>
-    <a href ng-click="graphUpdate()">Update</a>
-  </p>
-</div>
+<div ng-show="graphShowLive">
+  <h3>
+    Graphs
+    <small>
+      <a href ng-click="graphShowLive=false">Static</a> - 
+      Live -
+      <a href ng-click="tick(1,1)">Refresh</a> -
+      Auto-refresh in {{counter}}s
+    </small>
+  </h3>
 
-<p class="text-center pull-right">
-  <a href="" ng-click="showStatic=false">Live charts</a> - 
-  <a href="" ng-click="showStatic=true">Static charts</a>
-</p>
+  <div class="graph-live" id="livegraph" live="live"></div>
+</div>
 
 <br ng-hide="status.devs">
 <div ng-hide="status.devs" class='alert alert-danger'>No devices running</div>

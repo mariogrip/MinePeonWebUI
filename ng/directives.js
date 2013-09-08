@@ -33,7 +33,7 @@ angular.module('Peon.directives', [])
   }
 })
 
-.directive('livechart', function () {
+.directive('graphLive', function () {
   return {
     restrict: 'C',
     scope: {
@@ -45,28 +45,26 @@ angular.module('Peon.directives', [])
       var chart = new Highcharts.Chart({
         chart: {
           renderTo: attrs.id,
-          plotBackgroundColor: null,
-          plotBorderWidth: null,
-          plotShadow: false,
           type: 'areaspline',
           spacingLeft: 0,
           spacingRight: 0
         },
-        colors:   ['#666'],
+        colors:   ['rgb(0,0,0)'],
         legend:   {enabled: false},
         subtitle: {text: ''},
         title: {
-          text: 'Live hashrate',
+          text: 'Hashrate',
           align: 'center',
           verticalAlign: 'bottom',
         },
         xAxis: {
           type: 'datetime',
           minPadding: 0,
-          maxPadding: 0
+          maxPadding: 0,
+          tickPixelInterval: 120
         },
         yAxis: {
-          tickPixelInterval: 35,
+          tickPixelInterval: 30,
           title: {
             text: ''
           },
@@ -84,7 +82,7 @@ angular.module('Peon.directives', [])
         },
         plotOptions: {
           areaspline: {
-            fillColor: '#ccc',
+            fillOpacity: 0.1,
             marker: {
               enabled: false,
               states: {

@@ -19,9 +19,8 @@ margin-bottom: 0px;
 }
 
 /* Status charts */
-.livechart{
-  margin-top: 20px;
-  height: 200px;
+.graph-live{
+  height: 159px;
   width: 100%
 }
 
