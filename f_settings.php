@@ -113,6 +113,6 @@ function minerConfigGenerate(){
   }
 
   $miner['pools']= json_decode(@file_get_contents($configPools), true);
-  file_put_contents($configMiner, json_encode($miner, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
+  file_put_contents($configMiner, json_encode($miner, JSON_PRETTY_PRINT));
 }
 ?>
