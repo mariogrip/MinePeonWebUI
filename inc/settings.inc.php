@@ -13,4 +13,11 @@ if(isset($settings['userTimezone'])){
   date_default_timezone_set($timezone);
 }
 
+function writeSettings($settings, $file = 'minepeon.conf') {
+	// Call this when you want settings to be saved with writeSettings($settings);
+	// can be used to save to an alternat file name with writeSettings($settings, 'OtherFileName.conf);
+
+	file_put_contents("/opt/minepeon/etc/" . $file, json_encode($settings, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
+}
+
 ?>
