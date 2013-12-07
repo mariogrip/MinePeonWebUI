@@ -8,8 +8,8 @@
   <meta name="author" content="">
   <meta http-equiv="refresh" content="600">
 
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/bootstrap-minepeon.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/bootstrap-minepeon.css" rel="stylesheet">
 
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -24,6 +24,7 @@
   <link rel="shortcut icon" href="ico/favicon.png">-->
 </head>
 <body>
+<<<<<<< HEAD:head.php
 
     <!-- This need to be under <body> -->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -33,3 +34,5 @@
 
     <!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
     <script src="js/respond.js"></script>
+=======
+>>>>>>> upstream/master:old/head.php

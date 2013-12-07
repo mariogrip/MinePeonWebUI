@@ -11,7 +11,7 @@ create_graph("mhsav-month.png", "-1m", "Last Month");
 create_graph("mhsav-year.png", "-1y", "Last Year");
 
 function create_graph($output, $start, $title) {
-  $RRDPATH = '/opt/minepeon/var/rrd/';
+  $RRDPATH = '/opt/minepeon/http/rrd/';
   $options = array(
     "--slope-mode",
     "--start", $start,
@@ -48,16 +48,16 @@ include('menu.php');
 <div class="container">
   <h2>Status</h2>
   <p class="text-center">
-    <img src="rrd/mhsav-hour.png" alt="mhsav.png" />
-    <img src="rrd/mhsav-day.png" alt="mhsav.png" /><br/>
-    <a href="#" id="chartToggle">Toggle charts</a>
+    <img src="/rrd/mhsav-hour.png" alt="/mhsav.png" />
+    <img src="/rrd/mhsav-day.png" alt="/mhsav.png" /><br/>
+    <a href="#" id="chartToggle">Display extended charts</a>
   </p>
   <p class="text-center collapse chartMore">
-    <img src="rrd/mhsav-week.png" alt="mhsav.png" />
-    <img src="rrd/mhsav-month.png" alt="mhsav.png" />
+    <img src="/rrd/mhsav-week.png" alt="mhsav.png" />
+    <img src="/rrd/mhsav-month.png" alt="mhsav.png" />
   </p>
   <p class="text-center collapse chartMore">
-    <img src="rrd/mhsav-year.png" alt="mhsav.png" />
+    <img src="/rrd/mhsav-year.png" alt="mhsav.png" />
   </p>
   <div class="row">
     <div class="col-lg-4">
@@ -87,7 +87,7 @@ include('menu.php');
         <dt>Miner Version</dt>
         <dd><?php echo $summary['STATUS'][0]['Description']; ?></dd>
         <dt>Donation Minutes</dt>
-        <dd><?php echo $settings['donateAmount']."</dd>"; if ($settings['donateAmount'] == 0) { echo '<dd><marquee direction="left" scrollamount="3" behavior="scroll" style="width: 60px; height: 15px; color: #ff0000; font-size: 11px; text-decoration: blink;">Kitten Killer!</marquee></dd>'; } ?>
+       <?php if ($settings['donateAmount'] == 0) { echo '<dd><marquee direction="left" scrollamount="3" behavior="scroll" style="width: 60px; height: 15px; color: #ff0000; font-size: 11px; text-decoration: blink;">Kitten Killer!</marquee></dd>'; }else{ echo "<dd>" . $settings['donateAmount']."</dd>"; } ?>
       </dl>
     </div>
   </div>
@@ -254,7 +254,7 @@ function poolsTable($pools) {
       $rowclass = 'success';
 
     }
-	
+
 	$poolURL = explode(":", str_replace("/", "", $pool['URL']));
 
     $table = $table . "
@@ -280,4 +280,3 @@ function poolsTable($pools) {
   return $table;
 
 }
-

@@ -12,7 +12,13 @@
     $(".tablesorter").tablesorter();
     
     $('#chartToggle').click(function() {
-      $('.chartMore').slideToggle('slow');
+      $('.chartMore').slideToggle('slow', function() {
+          if ($(this).is(":visible")) {
+              $('#chartToggle').text('Hide extended charts');
+          } else {
+              $('#chartToggle').text('Display extended charts');
+          }
+      });
     });
     $('#alertEnable').click(function() {
       $(".alert-enabled").toggle(this.checked);
